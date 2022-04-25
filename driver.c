@@ -1,39 +1,3 @@
-/*
- * CSC A48 - Assignment 3 driver
- *
- * This driver is *very* different from the ones for A1 and A2.
- *
- * For the previous 2 assignments, and through the exercises
- * you have solved so far, we have been helping you develop and
- * improve your skills for testing code and verything it is
- * *correct*.
- *
- * So, this driver only does the basic functionality of
- * calling the functions that set-up a graph, and shows you
- * how to call the functions that you have to implement.
- *
- * Defining the tests you have to run on your code, and
- * determining whether the code is correct, is up to you.
- *
- * *You will NOT submit this file* - but you obviously want
- * to make sure you run sufficient and thorough testing of
- * all components of your A3 solution to avoid any problems
- * when we auto-mark it.
- *
- * Suggestions: Test for *correctness*, not output. As we
- * have explained before - you can write code that produces
- * the right output and still is completely wrong in terms of
- * what it does to solve a problem.
- *
- * So, think carefully about the correctness aspect of your
- * solution, see the post on Piazza on how to test your
- * code (it's old by now, but pinned), and remember your
- * notes for Unit 5 - the section on how to debug recursive
- * code.
- *
- * (c) 2019 - F. Estrada, M. Ahmadzadeh
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "ingredient_graph_1008154934.c"
@@ -225,9 +189,6 @@ int main()
   fresh breadcrumbs
   artichoke hearts
   gruyere cheese
-
-    You can use that as a reference, but BEWARE the fact that though I am confident my
-    solution is correct *I have not had the time to thoroughly test it*
     (you should know by now what that means)
 
     */
