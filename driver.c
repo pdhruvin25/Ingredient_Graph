@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "ingredient_graph_1008154934.c"
+#include "ingredient_graph.c"
 
 int main()
 {
