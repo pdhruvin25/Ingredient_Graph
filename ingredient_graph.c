@@ -1,61 +1,3 @@
-/*
- * CSC A48 - Assignment 3 - Ingredient networks
- *
- * In this assignment, you will practice and strengthen your
- * understanding of graph and recursion. The application
- * you're working on is a simple network for studying
- * how food ingredients interact.
- *
- * This kind of network is the basic model that very
- * powerful systems such as IMB's Watson use as the
- * basis for creating new combinations of ingredients
- * that are likely to go well together, but haven't been
- * used in previously printed recipes.
- *
- * Your work here has several components:
- *
- * - Understanding how the graph is represented by an
- *   adjacency matrix.
- * - Using the adjacency matrix to figure out, given
- *   an input ingredient, what other ingredients it is
- *   related to directly
- * - Using the adjacency matrix to determine, given
- *   a specific ingredient, which others are related
- *   to it directly *and* indirectly by a distance
- *   of k hops along the graph (k>=1).
- * - Get lits of ingredients that are related, but
- *   not including ingredients from a separate
- *   list of ingredients
- * - *crunchy* Using the adjacency matrix that, given
- *   a recipe (which a list of ingredients) and
- *   a target ingredient (part of the recipe) to
- *   replace, finds the best replacement from the
- *   remaining ingredients in the graph and updates
- *   the recipe.
- *
- * This file contains the functions that set up
- * the adjacency matrix and the list of ingredients
- * for you. We provide you with 2 graphs, a
- * small one with 10 ingredients (and an adjacency
- * matrix of size 10x10), and a full one with
- * 400 ingredients (adjacency matrix is 400x400).
- *
- * Use the 10x10 while implementing and testing your
- * solution, and only move to the full-size one once
- * you're confident your code works well.
- *
- * Select which matrix to use by uncommenting the
- * respective #define statement below.
- *
- * Sections where you have to implement code are
- * clearly marked
- * ********
- * TO DO:
- * ********
- *
- * (c) F. Estrada, March 2022
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -72,12 +14,6 @@
 // to store the ingredient names.
 double AdjMat[MAT_SIZE][MAT_SIZE];
 char ingredients[MAT_SIZE][MAX_STR_LEN];
-
-// Bare-bones implementation of a linked-list of
-// integers, you can use it to return the ingredient
-// lists requested from functions you have to
-// implement. DO NOT CHANGE THE IMPLEMENTATION
-// OF THE LINKED LISTS.
 
 typedef struct intNode_struct
 {
@@ -175,10 +111,6 @@ void load_ingredients(void)
     fclose(f);
 }
 
-/***************************************************************
- * The part of the assignment you need to implement starts below
- ***************************************************************/
-
 void print_ingredients(intNode *h)
 {
     /*
@@ -193,10 +125,6 @@ void print_ingredients(intNode *h)
         printf("%s\n", ingredients[new_node->x]);
         new_node = new_node->next;
     }
-    /*****
-     * TO Do:
-     * Complete this function
-     *****/
 }
 
 int ingredient_index(char source_ingredient[MAX_STR_LEN])
@@ -206,10 +134,7 @@ int ingredient_index(char source_ingredient[MAX_STR_LEN])
      * names for one that matches the requested
      * 'source_ingredient'. If a match is found, it
      * returns the index at which the matching ingredient
-     * name was found.
-     *
-     * If the 'source_ingredient' is *not* in the ingredients
-     * array, the function returns -1
+     * name was found
      */
     for (int j = 0; j < MAT_SIZE; j++)
     {
@@ -217,33 +142,13 @@ int ingredient_index(char source_ingredient[MAX_STR_LEN])
             return j;
     }
     return -1;
-    /******
-     * TO Do:
-     * Implement this function
-     *****/
-    // return 0;
 }
 
 void related_ingredients(char source_ingredient[MAX_STR_LEN])
 {
     /*
      * This function prints out all the ingredients related
-     * to the source ingredient.
-     *
-     * One per line, with no additional characters or symbols.
-     *
-     * Format of the adjacency matrix:
-     *
-     * AdjMat[i][j] = 0 if two ingredients i and j are not directly linked
-     *                (no edge in the graph between them, this means
-     *                 they never appeared together in one recipe)
-     * AdjMat[i][j] > 0 if two ingredients i and j are neighbours (they
-     * 			appeared together in at least a recipe). The
-     * 			actual value indicates how many times these two
-     * 			ingredients appeared together in a recipe
-     *
-     * Make sure you understand what this is telling you about the
-     * ingredients in your graph. You'll need it later
+     * to the source ingredient
      */
     int position = ingredient_index(source_ingredient);
     if (position >= 0)
@@ -254,14 +159,14 @@ void related_ingredients(char source_ingredient[MAX_STR_LEN])
                 printf("%s\n", ingredients[i]);
         }
     }
-
-    /**********
-     * TO DO:
-     * Implement this function
-     * ********/
 }
 intNode *related_k_dist(intNode *h, char source_ingredient[MAX_STR_LEN], int k, int dist)
 {
+    /*
+     * This function determines the ingredients related to the
+     * specified source ingredient by a distance of at most k.
+     * k >= 1 
+     */
     if (dist >= k && dist < MAT_SIZE)
         return h;
     int position = ingredient_index(source_ingredient);
@@ -275,56 +180,6 @@ intNode *related_k_dist(intNode *h, char source_ingredient[MAX_STR_LEN], int k, 
         }
     }
     return h;
-    /*
-     * This function determines the ingredients related to the
-     * specified source ingredient by a distance of at most k.
-     * k >= 1
-     *
-     * (for k=1, this produces the same list as related_ingredients)
-     *
-     * For instance, if k=2, the list should contain all the
-     * ingredients who are neighbours of source_ingredient[]
-     * as well as the ingredients that are neighbours of
-     * the neighbours (distance=2).
-     *
-     * If k=3, then we want source_ingredients' neighbours, its
-     * neighbours' neighbours, and its neighbours' neighbours'
-     * neighbours. And so on.
-     *
-     * *****  This function MUST use recursion  ******
-     *
-     * Ingredients are returned as *indexes*, so, for instance,
-     * if we find a related ingredient 'chicken' is stored at
-     * index 7 in ingredients[][], then we store 7 in the
-     * linked list of related ingredients.
-     *
-     * The returned list MUST CONTAIN NO DUPLICATES.
-     *
-     * And be smart about it, or you'll end up in an infinite
-     * recursion! So think carefully about the base case(s)
-     * and about what the recursive case must do.
-     *
-     * Example call:
-     *
-     * Our test code may call your function in this way:
-     *
-     * intNode *head=NULL;
-     * head=related_k_dist(head,"rice",2,0);
-     *
-     * After that call, 'head' must point to a linked list with
-     * all the ingredients related to 'rice' up to a distance of
-     * 2 away.
-     *
-     * It's up to *you* to figure out what the 'dist' parameter
-     * is for!
-     *
-     */
-    /*******
-     * TO DO:
-     * Complete this function
-     *******/
-
-    // return NULL;
 }
 
 intNode *remove_specific(intNode *source_neighbours, int want_to_delete)
@@ -362,6 +217,11 @@ intNode *remove_specific(intNode *source_neighbours, int want_to_delete)
 }
 intNode *related_with_restrictions(char source_ingredient[MAX_STR_LEN], char avoid[MAX_STR_LEN], int k_source, int k_avoid)
 {
+    /*
+     * This function returns a linked list that contains the indexes of
+     * all ingredients related to source_ingredient[] with a distance
+     * of at most k_source
+     */
     intNode *avoided_neighbours = NULL, *q = NULL, *source_neighbours = NULL;
     avoided_neighbours = related_k_dist(avoided_neighbours, avoid, k_avoid, 0);
     if (searchInt(avoided_neighbours, ingredient_index(avoid)) == 0)
@@ -376,37 +236,7 @@ intNode *related_with_restrictions(char source_ingredient[MAX_STR_LEN], char avo
     }
     avoided_neighbours = deleteList(avoided_neighbours);
     return source_neighbours;
-    /*
-     * This function returns a linked list that contains the indexes of
-     * all ingredients related to source_ingredient[] with a distance
-     * of at most k_source.
-     *
-     * BUT, the list *must not contain* any ingredients related to avoid[]
-     * (including avoid[] itself) by a distance of up to k_avoid.
-     *
-     * Example:
-     *
-     * intNode *head=NULL;
-     * head=related_with_restrictions("rice", "nuts", 2, 0);
-     * (yes, we know the function doesn't take the head of a linked list as a parameter,
-     *  that's not a mistake)
-     *
-     * Should return a pointer to the head of a list of ingredients related to
-     * 'rice' by a distance of up to 2, NOT INCLUDING 'nuts'.
-     *
-     * intNode *head=NULL;
-     * head=related_with_restrictions("rice", "chicken", 2, 1);
-     *
-     * Should return a list of ingredients related to 'rice' by a distance
-     * of up to 2, NOT INCLUDING 'nuts' and any ingredients related
-     * to 'nuts' with a distance of up to 1.
-     *
-     */
-
-    /****
-     * TO DO:
-     * Implement this function
-     *****/
+    
 }
 int search_in_recipe(int ingred, char recipe[10][MAX_STR_LEN])
 {
